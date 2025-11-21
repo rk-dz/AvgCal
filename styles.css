@@ -36,6 +36,45 @@
     --transition-speed: 0.4s;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box; /* Makes layout math more intuitive */
+}
+
+html {
+    -webkit-text-size-adjust: 100%; /* Prevents font scaling on iOS in landscape mode */
+}
+
+body {
+    margin: 0; /* Removes default body margin */
+    min-height: 100vh; /* Ensures body is at least the height of the viewport */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0; /* Removes default heading margins */
+    font-weight: inherit; /* We'll set our own weights */
+}
+
+p, ul, ol {
+    margin: 0; /* Removes default paragraph and list margins */
+    padding: 0; /* Removes default list padding */
+}
+
+ul, ol {
+    list-style: none; /* Removes default list bullets/numbers */
+}
+
+img {
+    max-width: 100%; /* Makes images responsive */
+    display: block; /* Removes bottom space under images */
+}
+
+button, input, select, textarea {
+    font-family: inherit; /* Inherits font from body */
+    font-size: 100%; /* Inherits font size */
+    margin: 0; /* Removes default margins */
+}
+
+
 /* --- Global Styles & Performance --- */
 *,
 *::before,
@@ -105,26 +144,6 @@ body {
     .card::before, .primary-button::before, .glass-input::before { animation: none; }
 }
 
-/* --- Animated Background (Layered on top of the image) --- */
-body::before {
-    content: '';
-    position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 300%;
-    height: 300%;
-    background: radial-gradient(circle at 20% 50%, rgba(76, 201, 240, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(67, 97, 238, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(247, 37, 133, 0.08) 0%, transparent 50%);
-    animation: backgroundShift 60s ease-in-out infinite;
-    z-index: -1;
-}
-
-@keyframes backgroundShift {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    33% { transform: translate(-5%, -5%) rotate(120deg); }
-    66% { transform: translate(5%, -5%) rotate(240deg); }
-}
 
 /* --- Typography --- */
 .main-header h1 {
