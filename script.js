@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         resetForm();
         updateSubjectsList();
-        updateResults();
+        updateResults(); // لا حاجة لتمرير قيمة هنا
         updateChart();
         updateUIVisibility();
         checkFormValidity();
@@ -109,10 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const subjectData = getSubjectFromForm(true); // تفعيل إظهار الأخطاء
-        if (!subjectData) {
-            return; // إذا كانت البيانات غير صالحة، توقف هنا
-        }
+        // --- الإصلاح: حساب المعدل القديم قبل تعديل البيانات ---
+        const { average: oldAverage } = calculateSemesterAverage(currentSemester.subjects);
+
+        const subjectData = getSubjectFromForm(true);
+        if (!subjectData) return;
 
         if (appState.editingIndex !== null) {
             const originalName = currentSemester.subjects[appState.editingIndex].name;
@@ -127,10 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showNotification(`تمت إضافة مادة ${subjectData.name} بنجاح.`, 'success');
         }
 
-        // --- تحديث الواجهة فوراً بعد الإضافة ---
         resetForm();
         updateSubjectsList();
-        updateResults(); // هذا السطر سيتم تنفيذه الآن بشكل مضمون
+        // --- الإصلاح: تمرير المعدل القديم الصحيح ---
+        updateResults(oldAverage);
         updateChart();
         updateUIVisibility();
         checkFormValidity();
@@ -164,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm(`هل أنت متأكد من حذف مادة "${subjectName}"؟`)) {
             currentSemester.subjects.splice(index, 1);
             updateSubjectsList();
-            updateResults(); // تحديث النتائج فوراً بعد الحذف
+            updateResults(); // لا حاجة لتمرير قيمة هنا
             updateChart();
             updateUIVisibility();
             checkFormValidity();
@@ -222,13 +223,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function updateResults() {
+    // --- الإصلاح: تعديل دالة updateResults لقبول المعدل القديم ---
+    function updateResults(oldAverage = null) {
         const currentSemester = getCurrentSemester();
         const subjects = currentSemester ? currentSemester.subjects : [];
         const { average, evaluation } = calculateSemesterAverage(subjects);
         
-        const oldAverage = parseFloat(elements.semesterAverage.textContent) || 0;
-        animateValue(elements.semesterAverage, oldAverage, average, 500);
+        // إذا لم يتم تمرير معدل قديم، احصل عليه من العنصر (للحالات الأولية)
+        const startValue = oldAverage !== null ? oldAverage : (parseFloat(elements.semesterAverage.textContent) || 0);
+        
+        animateValue(elements.semesterAverage, startValue, average, 500);
         elements.gradeEvaluation.textContent = evaluation;
         
         calculateAnnualAverage();
@@ -409,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const { average, evaluation } = calculateSemesterAverage(previewSubjects);
+        // في المعاينة، نحدث القيمة مباشرة بدون رسوم متحركة
         elements.semesterAverage.textContent = average.toFixed(2);
         elements.gradeEvaluation.textContent = evaluation;
     }
@@ -431,8 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ربط الأحداث والبدء (التصحيح الرئيسي هنا) ---
-    // تم تغيير مستمع الأحداث ليكون مباشرًا على الزر
+    // --- ربط الأحداث والبدء ---
     elements.addSubjectBtn.addEventListener('click', addOrUpdateSubject);
 
     elements.semesterSelect.addEventListener('change', (e) => {
@@ -453,7 +457,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // مستمع حدث موحد للتحديث الفوري والتحقق من الصحة
     elements.subjectInputForm.addEventListener('input', () => {
         checkFormValidity();
         updateResultsPreview();
