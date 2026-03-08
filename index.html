@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حساب المعدل الدراسي - التعليم المتوسط</title>
+    <title>حساب المعدل - التعليم المتوسط</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/minireset.css/0.0.6/minireset.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="app-container">
         <header class="main-header">
             <div class="header-content">
-                <h1>حساب المعدل الدراسي</h1>
-                <p>التعليم المتوسط - الجزائري</p>
+                <h1>حساب المعدل</h1>
+                <p>التعليم المتوسط</p>
             </div>
         </header>
-        
+
         <main class="main-content">
             <section class="card semester-control animate-in">
                 <div class="card-inner">
                     <h2>
-                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                        </svg>
                         اختر الفصل الدراسي
                     </h2>
                     <select id="semester-select" class="glass-input">
@@ -33,12 +39,16 @@
                     </select>
                 </div>
             </section>
-    
+
             <!-- Form is visible by default -->
             <section id="subject-input-form" class="card subject-input-form animate-in disabled-form">
                 <div class="card-inner">
                     <h2>
-                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
                         <span id="form-title">إضافة مادة</span>
                     </h2>
                     <div class="form-grid">
@@ -65,23 +75,27 @@
                             </div>
                             <div class="form-group">
                                 <label for="subject-coefficient">المعامل</label>
-                                <input type="number" id="subject-coefficient" class="glass-input numeric-input" placeholder="مثال: 3" min="1" max="5">
+                                <input type="number" id="subject-coefficient" class="glass-input numeric-input"
+                                    placeholder="مثال: 3" min="1" max="5">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="assignment-grade">درجة الفرض</label>
-                                <input type="number" id="assignment-grade" class="glass-input numeric-input" placeholder="من 0 إلى 20" min="0" max="20" step="0.25">
+                                <input type="number" id="assignment-grade" class="glass-input numeric-input"
+                                    placeholder="من 0 إلى 20" min="0" max="20" step="0.25">
                             </div>
                             <div class="form-group">
                                 <label for="exam-grade">درجة التقويم المستمر</label>
-                                <input type="number" id="exam-grade" class="glass-input numeric-input" placeholder="من 0 إلى 20" min="0" max="20" step="0.25">
+                                <input type="number" id="exam-grade" class="glass-input numeric-input"
+                                    placeholder="من 0 إلى 20" min="0" max="20" step="0.25">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="final-grade">درجة الاختبار</label>
-                                <input type="number" id="final-grade" class="glass-input numeric-input" placeholder="من 0 إلى 20" min="0" max="20" step="0.25">
+                                <input type="number" id="final-grade" class="glass-input numeric-input"
+                                    placeholder="من 0 إلى 20" min="0" max="20" step="0.25">
                             </div>
                         </div>
                     </div>
@@ -90,12 +104,19 @@
                     </button>
                 </div>
             </section>
-    
+
             <!-- Hidden by default, shown when at least one subject is added -->
             <section id="subjects-list-section" class="card subjects-list-section animate-in hidden">
                 <div class="card-inner">
                     <h2>
-                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <polyline points="10 9 9 9 8 9" />
+                        </svg>
                         المواد المضافة
                     </h2>
                     <ul id="subjects-list" class="subjects-list">
@@ -103,11 +124,16 @@
                     </ul>
                 </div>
             </section>
-    
+
             <section class="card results-section animate-in">
                 <div class="card-inner">
                     <h2>
-                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
                         النتائج
                     </h2>
                     <div class="results-grid">
@@ -130,11 +156,15 @@
                 </div>
             </section>
         </main>
-               
+
         <footer class="main-footer">
-            <p>&copy; 2025 جميع الحقوق محفوظة.</p>
+            <p>&copy; 2026 جميع الحقوق محفوظة.</p>
             <button id="clear-data-btn" class="secondary-button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
                 مسح البيانات
             </button>
         </footer>
@@ -145,7 +175,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.27/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
