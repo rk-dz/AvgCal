@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // تسجيل ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
     // --- إعدادات وحالة التطبيق (هيكل البيانات الجديد) ---
     const appState = {
         currentSemesterId: null,
@@ -92,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             appState.currentSemesterId = parseInt(semesterId, 10);
         }
-        
+
         resetForm();
         updateSubjectsList();
         updateResults(); // لا حاجة لتمرير قيمة هنا
@@ -160,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteSubject(index) {
         const currentSemester = getCurrentSemester();
         if (!currentSemester) return;
-        
+
         const subjectName = currentSemester.subjects[index].name;
         if (confirm(`هل أنت متأكد من حذف مادة "${subjectName}"؟`)) {
             currentSemester.subjects.splice(index, 1);
@@ -220,6 +223,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             elements.subjectsList.appendChild(li);
+
+            // إضافة رسوم متحركة باستخدام GSAP
+            gsap.fromTo(li, 
+                { opacity: 0, y: 20, scale: 0.9 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    duration: 0.4,
+                    ease: "power2.out"
+                }
+            );
         });
     }
 
@@ -228,13 +243,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentSemester = getCurrentSemester();
         const subjects = currentSemester ? currentSemester.subjects : [];
         const { average, evaluation } = calculateSemesterAverage(subjects);
-        
+
         // إذا لم يتم تمرير معدل قديم، احصل عليه من العنصر (للحالات الأولية)
         const startValue = oldAverage !== null ? oldAverage : (parseFloat(elements.semesterAverage.textContent) || 0);
-        
+
         animateValue(elements.semesterAverage, startValue, average, 500);
         elements.gradeEvaluation.textContent = evaluation;
-        
+
         calculateAnnualAverage();
     }
 
@@ -277,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (subjects.length === 0) return { average: 0, evaluation: 'لا توجد مواد' };
         const totalWeightedGrade = subjects.reduce((sum, sub) => sum + (sub.finalGrade * sub.coefficient), 0);
         const totalCoefficient = subjects.reduce((sum, sub) => sum + sub.coefficient, 0);
-        const average = totalWeightedGrade / totalCoefficient;
+        const average = totalCoefficient > 0 ? totalWeightedGrade / totalCoefficient : 0;
         return { average, evaluation: getGradeEvaluation(average) };
     }
 
@@ -329,23 +344,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (showErrors) showNotification('المعامل لا يمكن أن يتجاوز 5.', 'error');
             return null;
         }
-        
+
         const finalGrade = ((assignment + exam) / 2 + (final * 2)) / 3;
         return { name, coefficient, assignment, exam, final, finalGrade };
     }
-    
+
     function resetForm() {
         elements.subjectName.value = '';
         elements.subjectCoefficient.value = '';
         elements.assignmentGrade.value = '';
         elements.examGrade.value = '';
         elements.finalGrade.value = '';
-        
+
         appState.editingIndex = null;
         elements.formTitle.textContent = 'إضافة مادة';
         elements.formButtonText.textContent = 'إضافة المادة';
         elements.addSubjectBtn.style.background = '';
-        
+
         checkFormValidity();
     }
 
@@ -354,32 +369,45 @@ document.addEventListener('DOMContentLoaded', () => {
         notification.className = `notification ${type}`;
         notification.textContent = message;
         elements.notificationContainer.appendChild(notification);
-        
-        requestAnimationFrame(() => {
-            notification.classList.add('show');
-        });
 
-        setTimeout(() => {
-            notification.classList.add('hide');
-            setTimeout(() => {
-                notification.remove();
-            }, 600);
-        }, 3000);
+        // استخدام GSAP لتحسين الأداء
+        gsap.fromTo(notification, 
+            { opacity: 0, y: -40, scale: 0.8, rotationX: -10 },
+            { 
+                opacity: 1, 
+                y: 0, 
+                scale: 1, 
+                rotationX: 0,
+                duration: 0.6,
+                ease: "back.out(1.7)"
+            }
+        );
+
+        gsap.to(notification, {
+            opacity: 0,
+            y: -30,
+            scale: 0.9,
+            rotationX: 10,
+            duration: 0.6,
+            delay: 3,
+            ease: "power2.in",
+            onComplete: () => notification.remove()
+        });
     }
 
     function animateValue(element, start, end, duration) {
-        const range = end - start;
-        const increment = range / (duration / 16);
-        let current = start;
-        const timer = setInterval(() => {
-            current += increment;
-            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-                element.textContent = end.toFixed(2);
-                clearInterval(timer);
-            } else {
-                element.textContent = current.toFixed(2);
+        // استخدام GSAP لتحسين الأداء
+        gsap.to(element, {
+            duration: duration / 1000,
+            value: end,
+            ease: "power2.out",
+            onUpdate: function() {
+                element.textContent = parseFloat(this.targets()[0].value).toFixed(2);
+            },
+            onStart: function() {
+                this.targets()[0].value = start;
             }
-        }, 16);
+        });
     }
 
     // --- دالة مساعدة للتحديث الفوري (المصححة) ---
@@ -394,6 +422,11 @@ document.addEventListener('DOMContentLoaded', () => {
                              elements.finalGrade.value !== '';
 
         if (!isFormFilled) {
+            // إذا لم يتم ملء النموذج، استعد العرض الحالي
+            const { average, evaluation } = calculateSemesterAverage(currentSemester.subjects);
+            elements.semesterAverage.textContent = average.toFixed(2);
+            elements.gradeEvaluation.textContent = evaluation;
+            calculateAnnualAverage();
             return;
         }
 
@@ -416,6 +449,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // في المعاينة، نحدث القيمة مباشرة بدون رسوم متحركة
         elements.semesterAverage.textContent = average.toFixed(2);
         elements.gradeEvaluation.textContent = evaluation;
+
+        // تحديث المعدل السنوي في المعاينة
+        let totalAverage = 0;
+        appState.semesterData.forEach((semester, index) => {
+            if (semester.id === currentSemester.id) {
+                const { average: semAvg } = calculateSemesterAverage(previewSubjects);
+                totalAverage += semAvg;
+            } else {
+                const { average: semAvg } = calculateSemesterAverage(semester.subjects);
+                totalAverage += semAvg;
+            }
+        });
+
+        const annualAvg = totalAverage / 3;
+        elements.annualAverage.textContent = annualAvg.toFixed(2);
     }
 
     function checkFormValidity() {
@@ -444,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.clearDataBtn.addEventListener('click', clearAllData);
-    
+
     elements.subjectsList.addEventListener('click', (e) => {
         const btn = e.target.closest('button');
         if (!btn) return;
@@ -469,4 +517,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     switchSemester(appState.currentSemesterId);
     checkFormValidity();
+
+    // إضافة رسوم متحركة للبطاقات عند التحميل
+    gsap.fromTo(".card", 
+        { opacity: 0, y: 30 },
+        { 
+            opacity: 1, 
+            y: 0,
+            duration: 0.7,
+            stagger: 0.1,
+            ease: "power2.out"
+        }
+    );
+
+    // إضافة رسوم متحركة للرأس عند التحميل
+    gsap.fromTo(".main-header", 
+        { opacity: 0, y: -20 },
+        { 
+            opacity: 1, 
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out"
+        }
+    );
 });
